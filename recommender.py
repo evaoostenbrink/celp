@@ -56,15 +56,8 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         while sorted_x[x][1] == sorted_x[x + 1][1]:
             print(x, sorted_x[x], sorted_x[x + 1])
             x += 1
+
         
-        
-
-
-
-
-
-
-
 
 
     
