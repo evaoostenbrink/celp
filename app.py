@@ -20,8 +20,13 @@ def index():
     user = session.get("user")
     user_id = user["user_id"] if user else None
 
+    if user_id:
+        scenario = 2
+    elif not user_id:
+        scenario = 1
+
     # Get 10 recommendations
-    recommendations = recommender.recommend(user_id=user_id, n=10)
+    recommendations = recommender.recommend(user_id=user_id, n=10, scenario=scenario)
 
     # Render
     return render_template("index.html", recommendations=recommendations, user=session.get("user"))
@@ -60,6 +65,11 @@ def business(city, id):
     user = session.get("user")
     user_id = user["user_id"] if user else None
 
+    if user_id:
+        scenario = 4
+    elif not user_id:
+        scenario = 3
+
     # Get business by city and business_id
     business = data.get_business(city.lower(), id)
 
@@ -67,7 +77,7 @@ def business(city, id):
     reviews = data.get_reviews(city=business["city"].lower(), business_id=business["business_id"])
 
     # Get 10 recommendations
-    recommendations = recommender.recommend(user_id=user_id, business_id=id, city=business["city"].lower(), n=10)
+    recommendations = recommender.recommend(user_id=user_id, business_id=id, city=business["city"].lower(), n=10, scenario=scenario)
 
     # Render
     return render_template("business.html", business=business, recommendations=recommendations, reviews=reviews, user=user)
