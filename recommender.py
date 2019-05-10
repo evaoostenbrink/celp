@@ -33,8 +33,10 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         business_data = data.get_business(city, business_id)
         categories = business_data['categories']
 
+        # turn string of categories into list
         categories_split = categories.split(", ")
 
+        # take subset based on city
         bus_city = BUSINESSES[city]
 
         dic_cat = {}
@@ -45,20 +47,33 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         sim_cat = {}
         for key in dic_cat.keys():
             overlap = len(set(dic_cat[key]) & set(categories_split))
-            most_cat = max( len(dic_cat[key]), len(categories_split) )
+            most_cat = max(len(dic_cat[key]), len(categories_split))
             similarity = overlap / most_cat
             if similarity != 0:
                 sim_cat[key] = similarity
 
         sorted_x = sorted(sim_cat.items(), key=lambda kv: kv[1], reverse=True)
 
-        x = 9
-        while sorted_x[x][1] == sorted_x[x + 1][1]:
-            print(x, sorted_x[x], sorted_x[x + 1])
-            x += 1
+        print(sorted_x)
+        print("BREAK")
+        grote_list = []
+        l = []
+        for i in range(len(sorted_x)-1):
+            if sorted_x[i][1] == sorted_x[i+1][1]:
+                l.append(sorted_x[i])
+            if sorted_x[i][1] != sorted_x[i+1][1]:
+                l.append(sorted_x[i])
+                grote_list.append(l)
+                l = []
+        print(grote_list)
 
+
+
+        # x = 9
+        # while sorted_x[x][1] == sorted_x[x + 1][1]:
+        #     print(x, sorted_x[x], sorted_x[x + 1])
+        #     x += 1
         
-
 
     
     elif scenario == 4:
