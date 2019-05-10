@@ -67,14 +67,6 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                 l = []
         print(grote_list)
 
-
-
-        # x = 9
-        # while sorted_x[x][1] == sorted_x[x + 1][1]:
-        #     print(x, sorted_x[x], sorted_x[x + 1])
-        #     x += 1
-        
-
     
     elif scenario == 4:
         print("start recommending scenario 4")
