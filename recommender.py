@@ -73,26 +73,29 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                 grouped_sim_list.append(equal)
                 equal = []
 
-        
+        # create list with dicts containing rating and review count
         stars_and_reviews = []
         for group in grouped_sim_list:
             group = dict(group)
             for key in group:
                 key_data = data.get_business(city, key)
-                key_stars = key_data['stars']
-                key_reviews = key_data['review_count']
-                group[key] = [key_stars, key_reviews]
+                group[key] = [key_data['stars'], key_data['review_count']]
             stars_and_reviews.append(group)
 
+        # sort on stars, if stars are same value sort on review count
         final_list = []
         for equals in stars_and_reviews:
             sorted_items = sorted(equals.items(), key=lambda kv: kv[1], reverse=True)
+
+            # put all business id's in final list except for selected business
             for business in sorted_items:
-                final_list.append(business[0])
+                if business[0] != business_id:
+                    final_list.append(business[0])
         
+        # get all information for top10
         recommendation = []
         if len(final_list) >= 10:
-            for business in final_list[1:11]:
+            for business in final_list[0:10]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)   
 
