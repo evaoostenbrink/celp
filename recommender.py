@@ -39,33 +39,43 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         # take subset based on city
         bus_city = BUSINESSES[city]
 
+        # for each business in the selected city, link to categorie and placed in dict
+        # dict contains business_id : categories
         dic_cat = {}
         for bus in bus_city:
             cat_list = bus['categories'].split(", ")
             dic_cat[bus['business_id']] = cat_list
 
+        # calculate similarity between selected business and all other businesses in city
         sim_cat = {}
         for key in dic_cat.keys():
+
+            # devide categories overlap by maximum amount of categories
             overlap = len(set(dic_cat[key]) & set(categories_split))
             most_cat = max(len(dic_cat[key]), len(categories_split))
             similarity = overlap / most_cat
+
+            # place similarity in dict if similarity is not zero
             if similarity != 0:
                 sim_cat[key] = similarity
 
-        sorted_x = sorted(sim_cat.items(), key=lambda kv: kv[1], reverse=True)
+        # transform dict to list of tuples and sort by similarity
+        sorted_sim = sorted(sim_cat.items(), key=lambda kv: kv[1], reverse=True)
 
-        grote_list = []
+        # group similarities if similarity values are the same
+        grouped_sim_list = []
         equal = []
-        for i in range(len(sorted_x)-1):
-            if sorted_x[i][1] == sorted_x[i+1][1]:
-                equal.append(sorted_x[i])
-            if sorted_x[i][1] != sorted_x[i+1][1]:
-                equal.append(sorted_x[i])
-                grote_list.append(equal)
+        for i in range(len(sorted_sim)-1):
+            if sorted_sim[i][1] == sorted_sim[i+1][1]:
+                equal.append(sorted_sim[i])
+            if sorted_sim[i][1] != sorted_sim[i+1][1]:
+                equal.append(sorted_sim[i])
+                grouped_sim_list.append(equal)
                 equal = []
 
+        
         stars_and_reviews = []
-        for group in grote_list:
+        for group in grouped_sim_list:
             group = dict(group)
             for key in group:
                 key_data = data.get_business(city, key)
