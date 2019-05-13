@@ -82,7 +82,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         
         recommendation = []
         if len(final_list) >= 10:
-            for business in final_list[0:10]:
+            for business in final_list[1:11]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)   
 
