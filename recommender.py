@@ -54,19 +54,40 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         sorted_x = sorted(sim_cat.items(), key=lambda kv: kv[1], reverse=True)
 
-        print(sorted_x)
-        print("BREAK")
         grote_list = []
-        l = []
+        equal = []
         for i in range(len(sorted_x)-1):
             if sorted_x[i][1] == sorted_x[i+1][1]:
-                l.append(sorted_x[i])
+                equal.append(sorted_x[i])
             if sorted_x[i][1] != sorted_x[i+1][1]:
-                l.append(sorted_x[i])
-                grote_list.append(l)
-                l = []
-        print(grote_list)
+                equal.append(sorted_x[i])
+                grote_list.append(equal)
+                equal = []
 
+        stars_and_reviews = []
+        for group in grote_list:
+            group = dict(group)
+            for key in group:
+                key_data = data.get_business(city, key)
+                key_stars = key_data['stars']
+                key_reviews = key_data['review_count']
+                group[key] = [key_stars, key_reviews]
+            stars_and_reviews.append(group)
+
+        final_list = []
+        for equals in stars_and_reviews:
+            sorted_items = sorted(equals.items(), key=lambda kv: kv[1], reverse=True)
+            for business in sorted_items:
+                final_list.append(business[0])
+        
+        recommendation = []
+        if len(final_list) >= 10:
+            for business in final_list[0:10]:
+                dic_business = data.get_business(city, business)
+                recommendation.append(dic_business)   
+
+        print(recommendation)
+        return recommendation    
     
     elif scenario == 4:
         print("start recommending scenario 4")
