@@ -94,6 +94,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         
         # get all information for top10
         recommendation = []
+
         if len(final_list) >= 10:
             for business in final_list[0:10]:
                 dic_business = data.get_business(city, business)
@@ -103,14 +104,32 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
             for business in final_list:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
+            print(recommendation)
 
             needed_rec = 10 - len(final_list)
-            sub_set = BUSINESSES[~city]
+            
+            temporary_cities_list = CITIES
+
+            while True:
+                stad = random.choice(temporary_cities_list)
+                if stad != city:
+                    city = stad
+                    break
+            
+            # temporary_cities_list.remove(city)
+            # city = random.choice(temporary_cities_list)
+
+            bus_city = BUSINESSES[city]
+            
+            # while len(BUSINESSES[random_stad]) < needed_rec:
+            #     temporary_cities_list.remove(random_stad)
+            #     random_stad = random.choice(temporary_cities_list)
+
 
             # for each business in the selected city, link to categorie and placed in dict
             # dict contains business_id : categories
             dic_cat = {}
-            for bus in sub_set:
+            for bus in bus_city:
                 cat_list = bus['categories'].split(", ")
                 dic_cat[bus['business_id']] = cat_list
 
