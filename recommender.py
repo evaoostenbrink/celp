@@ -1,7 +1,8 @@
 from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS
-# from createframe import CHARDONFRAME
+from createframe import CHARDONFRAME
 import data
 import collections
+
 import pandas as pd
 
 import random
@@ -27,8 +28,15 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
             
     elif scenario == 2:
         print("start recommending scenario 2")
-        # print(CHARDONFRAME)
+        print(CHARDONFRAME)
 
+        review_in_city = []
+        for city in REVIEWS:
+            reviews_per_city = REVIEWS[city]
+            for review in reviews_per_city:
+                if user_id in review.values():
+                    review_in_city.append(city)
+        most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]  
     
     elif scenario == 3:
         print("start recommending scenario 3")
