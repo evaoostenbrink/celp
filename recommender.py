@@ -1,5 +1,4 @@
-from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS
-from createframe import CHARDONFRAME
+from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS, CHARDONFRAME
 import data
 import collections
 
@@ -39,7 +38,9 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                     review_in_city.append(city)
 
         # check what city is most reviewed and where user comes from
-        most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]  
+        most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]
+
+
     
     elif scenario == 3:
         print("start recommending scenario 3")
