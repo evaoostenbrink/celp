@@ -22,6 +22,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
     if scenario == 1:
         print("start recommending scenario 1")
+        
     
     elif scenario == 2:
         print("start recommending scenario 2")
@@ -112,20 +113,12 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
             while True:
                 stad = random.choice(temporary_cities_list)
-                if stad != city:
+                if stad != city and len(BUSINESSES[stad]) >= needed_rec:
                     city = stad
                     break
             
-            # temporary_cities_list.remove(city)
-            # city = random.choice(temporary_cities_list)
-
             bus_city = BUSINESSES[city]
             
-            # while len(BUSINESSES[random_stad]) < needed_rec:
-            #     temporary_cities_list.remove(random_stad)
-            #     random_stad = random.choice(temporary_cities_list)
-
-
             # for each business in the selected city, link to categorie and placed in dict
             # dict contains business_id : categories
             dic_cat = {}
@@ -142,9 +135,8 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                 most_cat = max(len(dic_cat[key]), len(categories_split))
                 similarity = overlap / most_cat
 
-                # place similarity in dict if similarity is not zero
-                if similarity != 0:
-                    sim_cat[key] = similarity
+                # place similarity in dict
+                sim_cat[key] = similarity
 
             # transform dict to list of tuples and sort by similarity
             sorted_sim = sorted(sim_cat.items(), key=lambda kv: kv[1], reverse=True)
