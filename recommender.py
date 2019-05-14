@@ -1,6 +1,8 @@
 from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS
+# from createframe import CHARDONFRAME
 import data
 import collections
+import pandas as pd
 
 import random
 
@@ -22,10 +24,11 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
     if scenario == 1:
         print("start recommending scenario 1")
-        
-    
+            
     elif scenario == 2:
         print("start recommending scenario 2")
+        # print(CHARDONFRAME)
+
     
     elif scenario == 3:
         print("start recommending scenario 3")
