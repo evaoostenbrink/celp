@@ -105,7 +105,6 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
             for business in final_list:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
-            print(recommendation)
 
             needed_rec = 10 - len(final_list)
             
