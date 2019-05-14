@@ -96,22 +96,33 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         # get all information for top10
         recommendation = []
 
+        # check if length of list is bigger than 10, if so append top 10 businesses to recommendations
         if len(final_list) >= 10:
             for business in final_list[0:10]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
         
         else:
+            
+            # if length of final_list is less than 10, first append all businesses we have got to recommandations
             for business in final_list:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
 
+            # check how much recommandations are needed to complete the top 10
             needed_rec = 10 - len(final_list)
             
+            # create a list with all cities
             temporary_cities_list = CITIES
 
             while True:
+
+                # pick a random city out of the list of all cities
                 stad = random.choice(temporary_cities_list)
+
+                # check if random picked city is equal to the current city
+                # check if there are enough cities in the random picked city to fill the top 10
+                # if so, break out of for loop
                 if stad != city and len(BUSINESSES[stad]) >= needed_rec:
                     city = stad
                     break
@@ -170,6 +181,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                     if business[0] != business_id:
                         final_list.append(business[0])
             
+            # get all data from businesses and put it in the recommandations
             for business in final_list[0:needed_rec]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
