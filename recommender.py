@@ -30,12 +30,15 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         print("start recommending scenario 2")
         print(CHARDONFRAME)
 
+        # create list with how many reviews user has placed in each city
         review_in_city = []
         for city in REVIEWS:
             reviews_per_city = REVIEWS[city]
             for review in reviews_per_city:
                 if user_id in review.values():
                     review_in_city.append(city)
+
+        # check what city is most reviewed and where user comes from
         most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]  
     
     elif scenario == 3:
