@@ -22,6 +22,21 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
     if scenario == 1:
         print("start recommending scenario 1")
+
+        # create list with businesses which have more than 10 reviews
+        valid_businesses = []
+        for var in BUSINESSES:
+            for x in BUSINESSES[var]:
+                if x['review_count'] > 10:
+                    valid_businesses.append(x)
+
+        # get all user ids
+        all_user_ids = []
+        for city in USERS:
+            for user in USERS[city]:
+                all_user_ids.append(user['user_id'])
+
+        print(all_user_ids)
             
     elif scenario == 2:
         print("start recommending scenario 2")
@@ -44,7 +59,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
         print(similarity)
         
-        # neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, 'DJ8EF11ewNmgMzvvGaygJg')
+        # neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, '4iuFGkrZYnWZgOaxNantdw')
         # print(neighborhood)
     
     elif scenario == 3:
