@@ -185,15 +185,36 @@ def create_similarity_matrix_cosine(matrix):
 
 def select_neighborhood(similarity_matrix, utility_matrix, target_user, target_film):
     """selects all items with similarity > 0"""
-    # Filter the movies target user has seen    
-    seen = utility_matrix[target_user].dropna()
-    similarity_matrix = similarity_matrix.loc[seen.index]
-    
-    # Filter movies that are similar to target film
-    similar = similarity_matrix[similarity_matrix[target_film] > 0]
-    return similar[target_film]
+    # Check if input is valid
+    if target_user in utility_matrix.columns and target_film in utility_matrix.index:
+        
+        # Filter the movies target user has seen
+        seen = utility_matrix[target_user].dropna()
+        similarity_matrix = similarity_matrix.loc[seen.index]
+
+        # Filter movies that are similar to target film
+        similar = similarity_matrix[similarity_matrix[target_film] > 0]
+        return similar[target_film]
     
 
+# Check for valid input added to function
+def weighted_mean(neighborhood, utility_matrix, user_id):
+    
+    # check for valid input
+    if isinstance(neighborhood, pd.Series):
+        if not neighborhood.any():
+            return 0
+
+    else:
+        if not neighborhood:
+            return 0
+    
+    # Filter matrix on seen movies and on given userId
+    rating = utility_matrix[user_id]
+    rating = rating[neighborhood.index]
+
+    # Calculate predicted rating with weighted mean
+    return ((rating * neighborhood).sum()) / neighborhood.sum() 
 
 
 

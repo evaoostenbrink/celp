@@ -3,6 +3,8 @@ import data
 import collections
 import pandas as pd
 import random
+import numpy as np
+import math
 
 def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
     """
@@ -54,13 +56,23 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         utility_matrix = data.create_frame(most_reviewed_city)
 
+        print("utility", utility_matrix)
+
         mean_centered_matrix = data.mean_center_columns(utility_matrix)
 
         similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
-        print(similarity)
-        
-        # neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, '4iuFGkrZYnWZgOaxNantdw')
-        # print(neighborhood)
+        print("similarity", similarity)
+
+        not_seen = []
+        for index, row in utility_matrix.iterrows():
+            if math.isnan(row[user_id]):
+                not_seen.append(index)
+        print(not_seen)
+              
+        for item in not_seen:
+            neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, item)
+            print(neighborhood)
+            print("predicted rating:", data.weighted_mean(neighborhood, utility_matrix, user_id))
     
     elif scenario == 3:
         print("start recommending scenario 3")
