@@ -116,18 +116,32 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         # get all information for top10
         recommendation = []
 
-        # check if length of list is bigger than 10, if so append top 10 businesses to recommendations
+        # check if length of list is bigger than or is 10, if so append top 10 businesses to recommendations
         if len(final_list) >= 10:
             for business in final_list[0:10]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
+
+            # for testing purposes. Check the terminal
+            print("\n")
+            print("NAME | SIMILARITY | AVERAGE RATING | REVIEW COUNT | CITY \n")
+            for i in recommendation:
+                print(i['name'], " | ", "similarity = ", sim_cat[i['business_id']], " | ", "Average rating =", i['stars'], " | ", "Review count =", i['review_count'], " | ", "City =", i['city'], "\n" )
+
         
         else:
             
-            # if length of final_list is less than 10, first append all businesses we have got to recommandations
+            # if length of final_list is less than 10, first append all businesses we have got to recommandend
             for business in final_list:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
+
+            # for testing purposes. Check the terminal
+            print("\n")
+            print("NAME | SIMILARITY | AVERAGE RATING | REVIEW COUNT | CITY \n")
+            for i in recommendation:
+                print(i['name'], " | ", "similarity = ", sim_cat[i['business_id']], " | ", "Average rating =", i['stars'], " | ", "Review count =", i['review_count'], " | ", "City =", i['city'], "\n" )
+            already_in_rec = len(final_list)
 
             # check how much recommandations are needed to complete the top 10
             needed_rec = 10 - len(final_list)
@@ -206,11 +220,9 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
         
-        # for testing purposes. Check the terminal
-        print("\n")
-        print("NAME | SIMILARITY | AVERAGE RATING | REVIEW COUNT | CITY \n")
-        for i in recommendation:
-            print(i['name'], " | ", "similarity = ", sim_cat[i['business_id']], " | ", "Average rating =", i['stars'], " | ", "Review count =", i['review_count'], " | ", "City =", i['city'], "\n" )
+            # for testing purposes. Check the terminal
+            for i in recommendation[already_in_rec:]:
+                print(i['name'], " | ", "similarity = ", sim_cat[i['business_id']], " | ", "Average rating =", i['stars'], " | ", "Review count =", i['review_count'], " | ", "City =", i['city'], "\n" )
 
         return recommendation    
     
