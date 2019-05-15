@@ -205,6 +205,12 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
             for business in final_list[0:needed_rec]:
                 dic_business = data.get_business(city, business)
                 recommendation.append(dic_business)
+        
+        # for testing purposes. Check the terminal
+        print("\n")
+        print("NAME | SIMILARITY | AVERAGE RATING | REVIEW COUNT | CITY \n")
+        for i in recommendation:
+            print(i['name'], " | ", "similarity = ", sim_cat[i['business_id']], " | ", "Average rating =", i['stars'], " | ", "Review count =", i['review_count'], " | ", "City =", i['city'], "\n" )
 
         return recommendation    
     
