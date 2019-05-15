@@ -14,6 +14,7 @@ import random
 import collections
 import pandas as pd
 import numpy as np
+import math
 
 DATA_DIR = "data"
 
@@ -129,6 +130,72 @@ def create_frame(stad=None):
                 dataframe[user][business] = rating
     # print(dataframe)
     return dataframe
+
+def mean_center_columns(matrix):
+    # Subtract mean of ratings from ratings
+    mean_matrix = matrix.mean()
+    return matrix - mean_matrix
+
+
+
+def cos_similarity(matrix, id1, id2):
+    """Compute eclid distance betwee two rows"""
+    # only take the features that have values for both id1 and id2
+    selected_features = matrix.loc[id1].notna() & matrix.loc[id2].notna()
+    
+    # if no matching features, return 0.0
+    if not selected_features.any():
+        return 0.0
+    
+    # get the features from the matrix
+    features1 = matrix.loc[id1][selected_features]
+    features2 = matrix.loc[id2][selected_features]
+    
+    # if one movie is only rated with zero
+    if not features1.any():
+        return 0.0
+    if not features2.any():
+        return 0.0
+    
+    # calculate the top part of the numerator
+    teller = sum(features1 * features2)
+    
+    # calculate the denominator
+    noemer = (math.sqrt(np.square(features1).sum())) * (math.sqrt(np.square(features2).sum()))
+    
+    return teller/noemer
+
+
+def create_similarity_matrix_cosine(matrix):
+    """ creates the similarity matrix based on cosine similarity """
+    similarity_matrix = pd.DataFrame(0, index=matrix.index, columns=matrix.index, dtype=float)
+    
+    # fill in matrix per user combination
+    for user1 in matrix.index:
+        for user2 in matrix.index:
+            if user1 == user2:
+                similarity_matrix[user1][user2] = 1
+            else:
+                similarity = cos_similarity(matrix, user1, user2)
+                if similarity != 0:
+                    similarity_matrix[user1][user2] = similarity
+                else:
+                    similarity_matrix[user1][user2] = 0
+    return similarity_matrix
+
+def select_neighborhood(similarity_matrix, utility_matrix, target_user, target_film):
+    """selects all items with similarity > 0"""
+    # Filter the movies target user has seen    
+    seen = utility_matrix[target_user].dropna()
+    similarity_matrix = similarity_matrix.loc[seen.index]
+    
+    # Filter movies that are similar to target film
+    similar = similarity_matrix[similarity_matrix[target_film] > 0]
+    return similar[target_film]
+    
+
+
+
 
 
 CITIES = load_cities()

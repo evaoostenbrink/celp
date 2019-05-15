@@ -37,10 +37,15 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         # check what city is most reviewed and where user comes from
         most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]
 
-        print(most_reviewed_city)
-        print(data.create_frame(most_reviewed_city))
+        utility_matrix = data.create_frame(most_reviewed_city)
 
+        mean_centered_matrix = data.mean_center_columns(utility_matrix)
 
+        similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
+        print(similarity)
+        
+        # neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, 'DJ8EF11ewNmgMzvvGaygJg')
+        # print(neighborhood)
     
     elif scenario == 3:
         print("start recommending scenario 3")
