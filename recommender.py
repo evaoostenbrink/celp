@@ -1,9 +1,7 @@
-from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS, CHARDONFRAME
+from data import CITIES, BUSINESSES, USERS, REVIEWS, TIPS, CHECKINS
 import data
 import collections
-
 import pandas as pd
-
 import random
 
 def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
@@ -27,7 +25,6 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
             
     elif scenario == 2:
         print("start recommending scenario 2")
-        print(CHARDONFRAME)
 
         # create list with how many reviews user has placed in each city
         review_in_city = []
@@ -39,6 +36,9 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         # check what city is most reviewed and where user comes from
         most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]
+
+        print(most_reviewed_city)
+        print(data.create_frame(most_reviewed_city))
 
 
     

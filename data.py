@@ -140,4 +140,4 @@ CHECKINS = load(CITIES, "checkin")
 
 # WESTLAKEFRAME = create_frame('westlake')
 # SUNCITYFRAME = create_frame('suncity')
-CHARDONFRAME = create_frame('chardon')
+# CHARDONFRAME = create_frame('chardon')
