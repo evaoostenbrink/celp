@@ -58,15 +58,23 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         print(" utility matrix created")
         print("utility", utility_matrix)
 
+# ----------------------------------------------------------------------------------------------
+        # for testing purposes
         re_frame = utility_matrix.reset_index()
         re_frame = re_frame.melt(id_vars=['index'], var_name='users', value_name='rating')
         print("reframed", list(re_frame.columns.values))
-        re_frame = re_frame.dropna()
         print(re_frame)
 
         train, test = train_test_split(re_frame, test_size=0.2)
-
         print(len(train), len(test))
+
+        
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------
 
         
 
