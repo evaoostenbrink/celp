@@ -61,28 +61,33 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         print("utility", utility_matrix)
 
 # ----------------------------------------------------------------------------------------------
-     # for testing purposes
-        # re_frame = utility_matrix.reset_index()
-        # re_frame = re_frame.melt(id_vars=['index'], var_name='users', value_name='rating')
-        # print("reframed", list(re_frame.columns.values))
-        # print(re_frame)
+    #  for testing purposes
+        re_frame = utility_matrix.reset_index()
+        re_frame = re_frame.melt(id_vars=['index'], var_name='users', value_name='rating')
+        print("reframed", list(re_frame.columns.values))
+        print(re_frame)
 
-        # train, test = train_test_split(re_frame, test_size=0.2)
-        # print(len(train), len(test))
-        # train = train.dropna()
-        # test = test.dropna()
-        # print(test)
-        # kevin_test = test
+        train, test = train_test_split(re_frame, test_size=0.2)
+        print(len(train), len(test))
+        train = train.dropna()
+        test = test.dropna()
+        print(test)
+        kevin_test = test
 
-        # utility_matrix_train = data.pivot_ratings(train)
-        # mean_center_train = data.mean_center_columns(utility_matrix_train)
-        # sim_cos_train = data.create_similarity_matrix_cosine(mean_center_train)
+        utility_matrix_train = data.pivot_ratings(train)
+        mean_center_train = data.mean_center_columns(utility_matrix_train)
+        sim_cos_train = data.create_similarity_matrix_cosine(mean_center_train)
 
-        # predicted_ratings = data.predict_ratings_item_based(sim_cos_train, utility_matrix_train, kevin_test)
-        
-        # predicted_ratings = predicted_ratings[predicted_ratings['predicted rating'] != 0]
-        # print(predicted_ratings)
-        # print(data.mse(predicted_ratings))
+        predicted_ratings = data.predict_ratings_item_based(sim_cos_train, utility_matrix_train, kevin_test)
+        predicted_ratings = predicted_ratings[predicted_ratings['predicted rating'] != 0]
+
+        random_test = predicted_ratings.copy()
+        random_test['predicted rating'] = np.random.uniform(0.5, 5.0, random_test.shape[0])
+
+        print(predicted_ratings)
+        print("RANDOM", random_test)
+        print(data.mse(predicted_ratings))
+        print(data.mse(random_test))
 
         
       
