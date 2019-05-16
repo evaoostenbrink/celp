@@ -69,20 +69,24 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         train, test = train_test_split(re_frame, test_size=0.2)
         print(len(train), len(test))
-
+        train = train.dropna()
+        test = test.dropna()
         print(test)
+        kevin_test = test
 
         utility_matrix_train = data.pivot_ratings(train)
         mean_center_train = data.mean_center_columns(utility_matrix_train)
         sim_cos_train = data.create_similarity_matrix_cosine(mean_center_train)
 
-        predicted_ratings = data.predict_ratings_item_based(sim_cos_train, utility_matrix_train, test)
+        predicted_ratings = data.predict_ratings_item_based(sim_cos_train, utility_matrix_train, kevin_test)
+        
+        predicted_ratings = predicted_ratings[predicted_ratings['predicted rating'] != 0]
         print(predicted_ratings)
-
-
-# ----------------------------------------------------------------------------------------------
+        print(data.mse(predicted_ratings))
 
         
+      
+# ----------------------------------------------------------------------------------------------
 
         # mean_centered_matrix = data.mean_center_columns(utility_matrix)
         # print("matrix mean centered")
@@ -97,11 +101,13 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         #         not_seen.append(index)
         # print("determined what user hasn't seen yet")
         # print(not_seen)
-              
+        
+        # pred = []
         # for item in not_seen:
         #     neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, item)
         #     print(neighborhood)
-        #     print("predicted rating:", data.weighted_mean(neighborhood, utility_matrix, user_id))
+        #     rating_prediction = "predicted rating:", data.weighted_mean(neighborhood, utility_matrix, user_id)
+        #     pred.append([item, rating_prediction])
     
     elif scenario == 3:
         print("start recommending scenario 3")

@@ -247,41 +247,44 @@ def pivot_ratings(ratings):
             pivot_data[user][item] = get_rating(ratings, user, item)
     return pivot_data
 
-def predict_ratings_item_based(similarity, utility, test_data):
-    # Create new column    
-    test_data["predicted rating"] = 0
-    
-    # Calculate predicted rating for all different combinations
-    for target_user in test_data["users"].unique():
-        for target_film in test_data["index"].unique():
-            
-            # Get index of combination
-            row = test_data.loc[(test_data['users'] == target_user) & (test_data['index'] == target_film)].index
-
-            # Get neighborhood of combination
-            neighborhood = select_neighborhood(similarity, utility, target_user, target_film)
-
-            # Calculate predicted rating
-            _weighted_mean = weighted_mean(neighborhood, utility, target_user)
-
-            # Place predicted rating in DataFrame
-            test_data.loc[row,"predicted rating"] = _weighted_mean
-            
-    # Make sure correct type
-    test_data["predicted rating"].astype(float, inplace=True)
-    return test_data
-
-
-# def prediction(similarity, utility, user, movie):
-#     # maak een functie waar de neighbors worden berekend en de weighted mean wordt berekend
-#     neighbors = select_neighborhood(similarity, utility, user, movie)
-#     return weighted_mean(neighbors, utility, user)
-
 # def predict_ratings_item_based(similarity, utility, test_data):
-#     # voeg een nieuwe kolom toe waar de uitkomst van de prediction functie wordt toegepast 
-#     test_data['predicted rating'] = test_data.apply(lambda row: prediction(similarity, utility, row['users'], row['index']), axis=1)
+#     # Create new column    
+#     test_data["predicted rating"] = 0
+    
+#     # Calculate predicted rating for all different combinations
+#     for target_user in test_data["users"].unique():
+#         for target_film in test_data["index"].unique():
+            
+#             # Get index of combination
+#             row = test_data.loc[(test_data['users'] == target_user) & (test_data['index'] == target_film)].index
+
+#             # Get neighborhood of combination
+#             neighborhood = select_neighborhood(similarity, utility, target_user, target_film)
+
+#             # Calculate predicted rating
+#             _weighted_mean = weighted_mean(neighborhood, utility, target_user)
+
+#             # Place predicted rating in DataFrame
+#             test_data.loc[row,"predicted rating"] = _weighted_mean
+            
+#     # Make sure correct type
+#     test_data["predicted rating"].astype(float, inplace=True)
 #     return test_data
 
+
+def prediction(similarity, utility, user, movie):
+    # maak een functie waar de neighbors worden berekend en de weighted mean wordt berekend
+    neighbors = select_neighborhood(similarity, utility, user, movie)
+    return weighted_mean(neighbors, utility, user)
+
+def predict_ratings_item_based(similarity, utility, test_data):
+    # voeg een nieuwe kolom toe waar de uitkomst van de prediction functie wordt toegepast 
+    test_data['predicted rating'] = test_data.apply(lambda row: prediction(similarity, utility, row['users'], row['index']), axis=1)
+    return test_data
+
+def mse(predicted_ratings):
+    predicted_ratings["difference"] = predicted_ratings["rating"] - predicted_ratings["predicted rating"]
+    return (np.square(predicted_ratings["difference"]).sum()) / (predicted_ratings["difference"].count())
 
 
 
