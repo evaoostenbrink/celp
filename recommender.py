@@ -59,7 +59,7 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         print("utility", utility_matrix)
 
 # ----------------------------------------------------------------------------------------------
-        # for testing purposes
+     # for testing purposes
         re_frame = utility_matrix.reset_index()
         re_frame = re_frame.melt(id_vars=['index'], var_name='users', value_name='rating')
         print("reframed", list(re_frame.columns.values))
@@ -68,34 +68,38 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         train, test = train_test_split(re_frame, test_size=0.2)
         print(len(train), len(test))
 
-        
+        print(test)
 
+        utility_matrix_train = data.pivot_ratings(train)
+        mean_center_train = data.mean_center_columns(utility_matrix_train)
+        sim_cos_train = data.create_similarity_matrix_cosine(mean_center_train)
 
-
+        predicted_ratings = data.predict_ratings_item_based(sim_cos_train, utility_matrix_train, test)
+        print(predicted_ratings)
 
 
 # ----------------------------------------------------------------------------------------------
 
         
 
-        mean_centered_matrix = data.mean_center_columns(utility_matrix)
-        print("matrix mean centered")
+        # mean_centered_matrix = data.mean_center_columns(utility_matrix)
+        # print("matrix mean centered")
 
-        similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
-        print("similarity calculated")
-        print("similarity", similarity)
+        # similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
+        # print("similarity calculated")
+        # print("similarity", similarity)
 
-        not_seen = []
-        for index, row in utility_matrix.iterrows():
-            if math.isnan(row[user_id]):
-                not_seen.append(index)
-        print("determined what user hasn't seen yet")
-        print(not_seen)
+        # not_seen = []
+        # for index, row in utility_matrix.iterrows():
+        #     if math.isnan(row[user_id]):
+        #         not_seen.append(index)
+        # print("determined what user hasn't seen yet")
+        # print(not_seen)
               
-        for item in not_seen:
-            neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, item)
-            print(neighborhood)
-            print("predicted rating:", data.weighted_mean(neighborhood, utility_matrix, user_id))
+        # for item in not_seen:
+        #     neighborhood = data.select_neighborhood(similarity, utility_matrix, user_id, item)
+        #     print(neighborhood)
+        #     print("predicted rating:", data.weighted_mean(neighborhood, utility_matrix, user_id))
     
     elif scenario == 3:
         print("start recommending scenario 3")

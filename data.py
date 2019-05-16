@@ -217,6 +217,72 @@ def weighted_mean(neighborhood, utility_matrix, user_id):
     return ((rating * neighborhood).sum()) / neighborhood.sum() 
 
 
+# define a helper function for accessing data
+def get_rating(ratings, userId, itemId):
+    """Given a userId and movieId, this function returns the corresponding rating.
+       Should return NaN if no rating exists."""
+    
+    # Get the row where userId and movieId correspond with given Ids
+    row = ratings.loc[(ratings['users'] == userId) & (ratings['index'] == itemId)]
+    
+    # return rating if available else return NaN
+    if row["rating"].empty is True:
+        return np.nan
+    else:    
+        rating = float(row["rating"])
+        return rating
+
+def pivot_ratings(ratings):
+    """ takes a rating table as input and computes the utility matrix """
+    # get movie and user id's
+    items = ratings['index'].unique()
+    userIds = ratings['users'].unique()
+    
+    # create empty data frame
+    pivot_data = pd.DataFrame(np.nan, columns=userIds, index=items, dtype=float)
+    
+    # use the function get_rating to fill the matrix
+    for user in userIds:
+        for item in items:
+            pivot_data[user][item] = get_rating(ratings, user, item)
+    return pivot_data
+
+def predict_ratings_item_based(similarity, utility, test_data):
+    # Create new column    
+    test_data["predicted rating"] = 0
+    
+    # Calculate predicted rating for all different combinations
+    for target_user in test_data["users"].unique():
+        for target_film in test_data["index"].unique():
+            
+            # Get index of combination
+            row = test_data.loc[(test_data['users'] == target_user) & (test_data['index'] == target_film)].index
+
+            # Get neighborhood of combination
+            neighborhood = select_neighborhood(similarity, utility, target_user, target_film)
+
+            # Calculate predicted rating
+            _weighted_mean = weighted_mean(neighborhood, utility, target_user)
+
+            # Place predicted rating in DataFrame
+            test_data.loc[row,"predicted rating"] = _weighted_mean
+            
+    # Make sure correct type
+    test_data["predicted rating"].astype(float, inplace=True)
+    return test_data
+
+
+# def prediction(similarity, utility, user, movie):
+#     # maak een functie waar de neighbors worden berekend en de weighted mean wordt berekend
+#     neighbors = select_neighborhood(similarity, utility, user, movie)
+#     return weighted_mean(neighbors, utility, user)
+
+# def predict_ratings_item_based(similarity, utility, test_data):
+#     # voeg een nieuwe kolom toe waar de uitkomst van de prediction functie wordt toegepast 
+#     test_data['predicted rating'] = test_data.apply(lambda row: prediction(similarity, utility, row['users'], row['index']), axis=1)
+#     return test_data
+
+
 
 
 CITIES = load_cities()
