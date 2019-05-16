@@ -34,11 +34,11 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         # get all user ids
         all_user_ids = []
-        for city in USERS:
-            for user in USERS[city]:
+        for stad in USERS:
+            for user in USERS[stad]:
                 all_user_ids.append(user['user_id'])
 
-        print(all_user_ids)
+        # print(all_user_ids)
             
     elif scenario == 2:
         print("start recommending scenario 2")
