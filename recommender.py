@@ -5,6 +5,7 @@ import pandas as pd
 import random
 import numpy as np
 import math
+from sklearn.model_selection import train_test_split
 
 def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
     """
@@ -37,8 +38,6 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
         for city in USERS:
             for user in USERS[city]:
                 all_user_ids.append(user['user_id'])
-
-        print(all_user_ids)
             
     elif scenario == 2:
         print("start recommending scenario 2")
@@ -53,20 +52,36 @@ def recommend(user_id=None, business_id=None, city=None, n=10, scenario=None):
 
         # check what city is most reviewed and where user comes from
         most_reviewed_city = collections.Counter(review_in_city).most_common()[0][0]
+        print("city determined", most_reviewed_city)
 
         utility_matrix = data.create_frame(most_reviewed_city)
-
+        print(" utility matrix created")
         print("utility", utility_matrix)
 
+        re_frame = utility_matrix.reset_index()
+        re_frame = re_frame.melt(id_vars=['index'], var_name='users', value_name='rating')
+        print("reframed", list(re_frame.columns.values))
+        re_frame = re_frame.dropna()
+        print(re_frame)
+
+        train, test = train_test_split(re_frame, test_size=0.2)
+
+        print(len(train), len(test))
+
+        
+
         mean_centered_matrix = data.mean_center_columns(utility_matrix)
+        print("matrix mean centered")
 
         similarity = data.create_similarity_matrix_cosine(mean_centered_matrix)
+        print("similarity calculated")
         print("similarity", similarity)
 
         not_seen = []
         for index, row in utility_matrix.iterrows():
             if math.isnan(row[user_id]):
                 not_seen.append(index)
+        print("determined what user hasn't seen yet")
         print(not_seen)
               
         for item in not_seen:
